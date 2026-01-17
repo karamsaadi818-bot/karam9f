@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رسالة خاصة</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #0c2461;
+            color: white;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+        
+        .login-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #fad390;
+        }
+        
+        .password-note {
+            margin-bottom: 25px;
+            font-size: 16px;
+            opacity: 0.8;
+        }
+        
+        .password-boxes {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            direction: ltr;
+        }
+        
+        .password-input {
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            text-align: center;
+            border: 2px solid #4a69bd;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            color: white;
+        }
+        
+        .password-input:focus {
+            outline: none;
+            border-color: #fad390;
+            box-shadow: 0 0 10px #fad390;
+        }
+        
+        .submit-btn {
+            background: #fad390;
+            color: #0c2461;
+            border: none;
+            padding: 12px 40px;
+            font-size: 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .submit-btn:hover {
+            background: #fa983a;
+            transform: translateY(-3px);
+        }
+        
+        .error-msg {
+            color: #ff7675;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .message-box {
+            display: none;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 10px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 85vh;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .message-title {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: #fad390;
+        }
+        
+        .message-content-container {
+            max-height: 50vh;
+            overflow-y: auto;
+            padding: 20px;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        
+        /* تخصيص شريط التمرير */
+        .message-content-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .message-content-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        
+        .message-content-container::-webkit-scrollbar-thumb {
+            background: #fad390;
+            border-radius: 4px;
+        }
+        
+        .message-content-container::-webkit-scrollbar-thumb:hover {
+            background: #fa983a;
+        }
+        
+        .message-content {
+            font-size: 20px;
+            line-height: 1.8;
+            text-align: right;
+            font-family: 'Arial', sans-serif;
+            padding: 10px;
+        }
+        
+        .typing-cursor {
+            display: inline-block;
+            width: 3px;
+            height: 20px;
+            background-color: #fad390;
+            margin-left: 5px;
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        .music-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            gap: 15px;
+        }
+        
+        .music-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .song-title {
+            font-size: 16px;
+            color: #fad390;
+        }
+        
+        .rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .drop {
+            position: absolute;
+            top: -20px;
+            width: 1px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            animation: rain 1.5s linear infinite;
+        }
+        
+        @keyframes rain {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+        
+        .scroll-indicator {
+            text-align: center;
+            margin-top: 10px;
+            color: #fad390;
+            font-size: 14px;
+            opacity: 0.8;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .login-box, .message-box {
+                padding: 20px;
+            }
+            
+            .message-box {
+                max-width: 95%;
+                max-height: 90vh;
+            }
+            
+            .message-content-container {
+                max-height: 60vh;
+            }
+            
+            .password-input {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+            
+            .message-content {
+                font-size: 18px;
+            }
+        }
+        
+        @media (max-height: 700px) {
+            .message-content-container {
+                max-height: 40vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="rain" id="rainEffect"></div>
+    
+    <div class="container">
+        <div class="login-box" id="loginBox">
+            <h1>اسمك بجهازي ؟</h1>
+            <p class="password-note">أدخل الرمز للدخول</p>
+            
+            <div class="password-boxes">
+                <input type="text" maxlength="1" class="password-input" id="char1">
+                <input type="text" maxlength="1" class="password-input" id="char2">
+                <input type="text" maxlength="1" class="password-input" id="char3">
+                <input type="text" maxlength="1" class="password-input" id="char4">
+                <input type="text" maxlength="1" class="password-input" id="char5">
+                <input type="text" maxlength="1" class="password-input" id="char6">
+                <input type="text" maxlength="1" class="password-input" id="char7">
+            </div>
+            
+            <button class="submit-btn" id="submitBtn">دخول</button>
+            <div class="error-msg" id="errorMsg">الرمز غير صحيح! الرمز : similar</div>
+        </div>
+        
+        <div class="message-box" id="messageBox">
+            <h2 class="message-title">رسالة خاصة</h2>
+            
+            <div class="message-content-container" id="messageContainer">
+                <div class="message-content" id="messageText"></div>
+            </div>
+            
+            <div class="scroll-indicator" id="scrollIndicator">
+                ↕️ استمر في التمرير لقراءة بقية الرسالة
+            </div>
+            
+            <div class="music-controls">
+                <button class="music-btn" id="playBtn">▶</button>
+                <button class="music-btn" id="pauseBtn">⏸</button>
+                <div class="song-title">كاظم الساهر - حبيبتي والمطر</div>
+            </div>
+        </div>
+    </div>
+    
+    <audio id="musicPlayer" loop>
+        <source src="https://cdn1.esm3.com//music/42/esm3.com.190296.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // العناصر الرئيسية
+        const loginBox = document.getElementById('loginBox');
+        const messageBox = document.getElementById('messageBox');
+        const submitBtn = document.getElementById('submitBtn');
+        const errorMsg = document.getElementById('errorMsg');
+        const rainEffect = document.getElementById('rainEffect');
+        const musicPlayer = document.getElementById('musicPlayer');
+        const playBtn = document.getElementById('playBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const messageText = document.getElementById('messageText');
+        const messageContainer = document.getElementById('messageContainer');
+        const scrollIndicator = document.getElementById('scrollIndicator');
+        
+        // مربعات إدخال الرمز
+        const char1 = document.getElementById('char1');
+        const char2 = document.getElementById('char2');
+        const char3 = document.getElementById('char3');
+        const char4 = document.getElementById('char4');
+        const char5 = document.getElementById('char5');
+        const char6 = document.getElementById('char6');
+        const char7 = document.getElementById('char7');
+        const passwordInputs = [char1, char2, char3, char4, char5, char6, char7];
+        
+        // الرمز الصحيح
+        const correctCode = "similar";
+        
+        // نص الرسالة (تم تقصيره قليلاً للاختبار، يمكنك إعادة الرسالة الكاملة)
+        const fullMessage = "شبيهتي ، اتمنى تكونين بخير، ما اعرف اذا راح تلگين الباركود و اذا راح تعرفين الرمز بس المهم اكتبلج الي اريدة لان ما ودعتج ، مبدئيا اني ابتعدت قبل لخاطرج و اذا هسة هم يريحج هل شي فيبقى اهم شي راحتج , لان اني مادخلت حياتج الا و اريد تكون حياتج احسن من كل النواحي مو العكس . لان انت شي مهم بحياتي . وما تصورت اسوي بيج الي صار بس حكمت الزمن و الضروف و شغلة من جنا نتواصل اذا لاحظتي مني فد تقصير بمراسلة او شي ثاني فاحب اكلج اني ما جنت مشغول ابني مستقبلي و انما جنت انشغل حتى أحاول ابني مستقبلنا فاعتذر اذا هل شي انعكس بالصورة السلبية, و بعيدا كل البعد عن ضرفي من تركنا بس تبقى علية مسؤلية الي صار بيج و الأمور الي عشتيها بسببي , حاولت اصحح او اعوض الشي الصار بس ما سمحتي بهل شي ولا حاولتي تفكرين , وتبقين شما سويتي فهم حقج و اني جد اعرف هل شي , بس يبقى بان كل شي بالحياة الة حل ماكو شي مالة حل , جنت متمني اخذ فرصة , ومهما كتبت مراح يصل تعبيري ولو حتى جزء من شعوري بس احب اكلج انت افضل شخص تعرفت علي . و على رغم جنتي مو يمي ببعض الأحيان و حتى من تركنا بس عايشة بكل تفاصيلي , ممستوعب بان  الحياة راح تكون من دونج بس فدوات اذا ابتعادي عنج يريحج , و احب اشكرج على كل لحضة بتفاصيلها و عشناها سوى بالحلوة و المرة وحتى الأيام الي جانت مرة و انت موجودة فهي حلوة و وجودج كان جد مهم بحياتي و غيرني هواي  و أيام الي اشوفج بيها فهي من اسعد ايامي و ما انسى ضحكتج الحلوة و عنادج وحرصج و خوفج علية و اهتمامج و وكفتج وياية و تشجيعج بكل اموري و جنت أتمنى نفرح سوى بتفتيحة الكوفي و راح تبقى فرحتي ناقصة , و اكيد أيامنا الي جنا نلعب بيها والمطر و الأغاني الحبيتها على حبج الها و كلشي جان الة غير طعم  نكدج الحلو و عصبيتج من انرفزج , و أيام المعهد الي كرهت المعهد من تخرجتي و يوم الفضحتيني بي و اني بعدها اشرب جاي ويا والدج هههه , و نضرات جنتكم الي ما انساها , وكل التفاصيل الي جنتي بيها فجدا اشكرج عليها و تبقين انت فطومة الجميلة والقوية و المثابرة و الحبابة و الخلوقة و اللطيفة و الواعية و الذكية و الهادئة و الطموحة الي اعرفها , ربي تحققين كل طموحاتج و تكونين اسعد بنية و اشوفج باعلى المراتب و ايامج كلها سعادة و فرح . طولت عليج بس اتحمليني ,و اعتذر من كل قلبي على كل لحضة ممكن ضوجتج بيها  و تبقين انت دعوة مكة الي دعيتها و استجابتلي . *الى حب حياتي فصعونة*ي...";
+        
+        // إعداد مربعات الإدخال
+        passwordInputs.forEach((input, index) => {
+            input.addEventListener('input', function(e) {
+                if (this.value.length === 1 && index < passwordInputs.length - 1) {
+                    passwordInputs[index + 1].focus();
+                }
+                
+                // تحقق من الرمز عند اكتمال الإدخال
+                if (index === passwordInputs.length - 1 && this.value.length === 1) {
+                    checkPassword();
+                }
+            });
+            
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && this.value.length === 0 && index > 0) {
+                    passwordInputs[index - 1].focus();
+                }
+            });
+        });
+        
+        // زر الدخول
+        submitBtn.addEventListener('click', checkPassword);
+        
+        // دالة التحقق من الرمز
+        function checkPassword() {
+            let enteredCode = "";
+            passwordInputs.forEach(input => {
+                enteredCode += input.value;
+            });
+            
+            if (enteredCode.toLowerCase() === correctCode) {
+                // نجاح الدخول
+                loginBox.style.display = 'none';
+                messageBox.style.display = 'block';
+                
+                // بدء تأثير المطر
+                startRain();
+                
+                // بدء كتابة الرسالة
+                typeMessage();
+                
+                // تشغيل الموسيقى بعد تأخير
+                setTimeout(() => {
+                    musicPlayer.play().catch(e => {
+                        console.log("المتصفح يمنع التشغيل التلقائي");
+                    });
+                }, 1000);
+            } else {
+                // خطأ في الرمز
+                errorMsg.style.display = 'block';
+                passwordInputs.forEach(input => {
+                    input.style.borderColor = '#ff7675';
+                });
+                
+                setTimeout(() => {
+                    errorMsg.style.display = 'none';
+                    passwordInputs.forEach(input => {
+                        input.value = '';
+                        input.style.borderColor = '#4a69bd';
+                    });
+                    char1.focus();
+                }, 2000);
+            }
+        }
+        
+        // تأثير المطر
+        function startRain() {
+            for (let i = 0; i < 50; i++) {
+                createRainDrop();
+            }
+            
+            setInterval(createRainDrop, 100);
+        }
+        
+        function createRainDrop() {
+            const drop = document.createElement('div');
+            drop.classList.add('drop');
+            
+            drop.style.left = Math.random() * 100 + 'vw';
+            drop.style.animationDuration = (0.5 + Math.random() * 1) + 's';
+            drop.style.opacity = Math.random() * 0.5 + 0.3;
+            
+            rainEffect.appendChild(drop);
+            
+            setTimeout(() => {
+                drop.remove();
+            }, 1500);
+        }
+        
+        // كتابة الرسالة حرفًا بحرف
+        function typeMessage() {
+            let index = 0;
+            const typingSpeed = 50; // أبطأ قليلاً للقراءة
+            let isTypingComplete = false;
+            
+            function typeNextChar() {
+                if (index < fullMessage.length) {
+                    messageText.innerHTML = fullMessage.substring(0, index + 1) + '<span class="typing-cursor"></span>';
+                    index++;
+                    
+                    // التحقق إذا كان هناك محتوى غير مرئي وعرض مؤشر التمرير
+                    checkScrollNeeded();
+                    
+                    setTimeout(typeNextChar, typingSpeed);
+                } else {
+                    isTypingComplete = true;
+                    messageText.innerHTML = fullMessage;
+                    scrollIndicator.style.display = 'block';
+                }
+            }
+            
+            // بدء الكتابة بعد تأخير قصير
+            setTimeout(typeNextChar, 500);
+        }
+        
+        // التحقق إذا كانت هناك حاجة للتمرير
+        function checkScrollNeeded() {
+            if (messageContainer.scrollHeight > messageContainer.clientHeight) {
+                scrollIndicator.style.display = 'block';
+            } else {
+                scrollIndicator.style.display = 'none';
+            }
+        }
+        
+        // عند التمرير، إخفاء المؤشر تدريجياً
+        messageContainer.addEventListener('scroll', function() {
+            const scrollPercentage = (this.scrollTop + this.clientHeight) / this.scrollHeight;
+            if (scrollPercentage > 0.95) {
+                scrollIndicator.style.opacity = '0';
+            } else {
+                scrollIndicator.style.opacity = '0.8';
+            }
+        });
+        
+        // عناصر التحكم بالموسيقى
+        playBtn.addEventListener('click', () => {
+            musicPlayer.play();
+        });
+        
+        pauseBtn.addEventListener('click', () => {
+            musicPlayer.pause();
+        });
+        
+        // ضبط مستوى الصوت
+        musicPlayer.volume = 0.5;
+        
+        // تركيز على أول مربع إدخال
+        window.onload = function() {
+            char1.focus();
+        };
+    </script>
+</body>
+</html>
